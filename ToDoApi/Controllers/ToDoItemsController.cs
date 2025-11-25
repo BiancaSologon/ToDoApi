@@ -110,8 +110,8 @@ public class ToDoItemsController : ControllerBase
         return _context.ToDoItems.Any(e => e.Id == id);
     }
 
-    private static ToDoItemsDTO ItemToDTO(ToDoItem toDoItem) =>
-        new ToDoItemsDTO
+    private static ToDoItem ToDoItem(ToDoItem toDoItem) =>
+        new ToDoItem
         {
             Id = toDoItem.Id,
             Name = toDoItem.Name,
