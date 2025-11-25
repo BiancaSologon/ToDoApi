@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ToDoApi.Models;
 
@@ -24,7 +19,7 @@ public class ToDoItemsController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<ToDoItemsDTO>>> GetToDoItems()
     {
-        return await _context.ToDoItems.Select(x => ItemToDTO(x)).ToListAsync();
+        return await _context.ToDoItems.Select(x => ToDoItemsDTO(x)).ToListAsync();
     }
 
     // GET: api/ToDoItems/5
@@ -38,13 +33,12 @@ public class ToDoItemsController : ControllerBase
             return NotFound();
         }
 
-        return ItemToDTO(toDoItem);
+        return ToDoItemsDTO(toDoItem);
     }
 
     // PUT: api/ToDoItems/5
-    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutToDoItem(long id, ToDoItemsDTO toDoItemDTO)
+    public async Task<IActionResult> PutToDoItem(long id, ToDoItem toDoItemDTO)
     {
         if (id != toDoItemDTO.Id)
         {
@@ -59,6 +53,7 @@ public class ToDoItemsController : ControllerBase
 
         toDoItem.Name = toDoItemDTO.Name;
         toDoItem.IsComplete = toDoItemDTO.IsComplete;
+        toDoItem.Description = toDoItemDTO.Description;
 
         try
         {
@@ -73,20 +68,21 @@ public class ToDoItemsController : ControllerBase
     }
 
     // POST: api/ToDoItems
-    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPost]
     public async Task<ActionResult<ToDoItem>> PostToDoItem(ToDoItemsDTO toDoItemDTO)
     {
         var toDoItem = new ToDoItem
         {
             IsComplete = toDoItemDTO.IsComplete,
-            Name = toDoItemDTO.Name
+            Name = toDoItemDTO.Name,
+            Description = toDoItemDTO.Description,
+            Secret = toDoItemDTO.Secret
         };
 
         _context.ToDoItems.Add(toDoItem);
         await _context.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(GetToDoItem), new { id = toDoItem.Id }, ItemToDTO(toDoItem));
+        return CreatedAtAction(nameof(GetToDoItem), new { id = toDoItem.Id }, ToDoItemsDTO(toDoItem));
     }
 
     // DELETE: api/ToDoItems/5
@@ -110,11 +106,13 @@ public class ToDoItemsController : ControllerBase
         return _context.ToDoItems.Any(e => e.Id == id);
     }
 
-    private static ToDoItem ToDoItem(ToDoItem toDoItem) =>
-        new ToDoItem
+    private static ToDoItemsDTO ToDoItemsDTO(ToDoItem toDoItem) =>
+        new ToDoItemsDTO
         {
             Id = toDoItem.Id,
             Name = toDoItem.Name,
-            IsComplete = toDoItem.IsComplete
+            Description = toDoItem.Description,
+            IsComplete = toDoItem.IsComplete,
+            Secret = toDoItem.Secret,
         };
 }

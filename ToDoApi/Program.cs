@@ -13,11 +13,11 @@ builder.Services.AddDbContext<ToDoContext>(options =>
 );
 
 builder.Services.AddEndpointsApiExplorer();
-//builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
-builder.Services.AddDbContext<ToDoContext>(option => option.UseSqlServer("ToDoList"));
+//builder.Services.AddDbContext<ToDoContext>(option => option.UseSqlServer("ToDoList"));
 
 var app = builder.Build();
 
@@ -25,6 +25,8 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
