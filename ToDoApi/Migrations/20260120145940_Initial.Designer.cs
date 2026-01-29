@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ToDoApi.Models;
 
@@ -11,9 +12,11 @@ using ToDoApi.Models;
 namespace ToDoApi.Migrations
 {
     [DbContext(typeof(ToDoContext))]
-    partial class ToDoContextModelSnapshot : ModelSnapshot
+    [Migration("20260120145940_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,32 +24,6 @@ namespace ToDoApi.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("ToDoApi.Models.Comment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("ToDoItemId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ToDoItemId");
-
-                    b.ToTable("Comment", "ToDoApp");
-                });
 
             modelBuilder.Entity("ToDoApi.Models.ToDoDetails", b =>
                 {
@@ -116,17 +93,6 @@ namespace ToDoApi.Migrations
                     b.ToTable("ToDoItem", "ToDoApp");
                 });
 
-            modelBuilder.Entity("ToDoApi.Models.Comment", b =>
-                {
-                    b.HasOne("ToDoApi.Models.ToDoItem", "ToDoItem")
-                        .WithMany("Comments")
-                        .HasForeignKey("ToDoItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ToDoItem");
-                });
-
             modelBuilder.Entity("ToDoApi.Models.ToDoDetails", b =>
                 {
                     b.HasOne("ToDoApi.Models.ToDoItem", "ToDoItem")
@@ -140,8 +106,6 @@ namespace ToDoApi.Migrations
 
             modelBuilder.Entity("ToDoApi.Models.ToDoItem", b =>
                 {
-                    b.Navigation("Comments");
-
                     b.Navigation("ToDoDetails");
                 });
 #pragma warning restore 612, 618

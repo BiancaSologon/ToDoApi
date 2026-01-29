@@ -8,4 +8,12 @@ public class ToDoContext : DbContext
         : base(options) { }
 
     public DbSet<ToDoItem> ToDoItems { get; set; } = null;
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        //modelBuilder.ApplyConfiguration(new ToDoItemConfiguration());
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(ToDoContext).Assembly);
+
+        base.OnModelCreating(modelBuilder);
+    }
 }
