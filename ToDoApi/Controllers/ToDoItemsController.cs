@@ -15,6 +15,10 @@ public class ToDoItemsController : ControllerBase
         _context = context;
     }
 
+    //GET comments for 1 todoitem: /api/ToDoItems/{id}/comments/{commentId}
+
+    // api/todoitems/5/tags/2
+
     // GET: api/ToDoItems
     [HttpGet]
     public async Task<ActionResult<IEnumerable<ToDoItemsDTO>>> GetToDoItems()
@@ -76,7 +80,13 @@ public class ToDoItemsController : ControllerBase
             IsComplete = toDoItemDTO.IsComplete,
             Name = toDoItemDTO.Name,
             Description = toDoItemDTO.Description,
-            Secret = toDoItemDTO.Secret
+            Secret = toDoItemDTO.Secret,
+            CreatedAt = DateTime.UtcNow,
+            Comments = toDoItemDTO.Comments!.Select(commentDTO => new Comment
+            {
+                Content = commentDTO.Content,
+                CreatedAt = DateTime.UtcNow
+            }).ToList(),
         };
 
         _context.ToDoItems.Add(toDoItem);
@@ -114,5 +124,9 @@ public class ToDoItemsController : ControllerBase
             Description = toDoItem.Description,
             IsComplete = toDoItem.IsComplete,
             Secret = toDoItem.Secret,
+            Comments = toDoItem.Comments?.Select(c => new CommentDTO
+            {
+                Content = c.Content
+            }).ToList()
         };
 }

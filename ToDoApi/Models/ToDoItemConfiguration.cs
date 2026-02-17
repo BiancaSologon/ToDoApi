@@ -22,6 +22,13 @@ public class ToDoItemConfiguration : IEntityTypeConfiguration<ToDoItem>
                .HasForeignKey(c => c.ToDoItemId)
                .IsRequired();
 
+        builder.HasMany(tdi => tdi.Tags)
+            .WithMany(t => t.ToDoItems)
+            .UsingEntity("ToDoItemTag",
+            j => j.HasOne(typeof(Tag)).WithMany().HasForeignKey("TagId").HasPrincipalKey(nameof(Tag.Id)),
+            j => j.HasOne(typeof(ToDoItem)).WithMany().HasForeignKey("ToDoItemId").HasPrincipalKey(nameof(ToDoItem.Id)),
+            j => j.HasKey("TagId", "ToDoItemId"));
+
         builder.ToTable("ToDoItem", "ToDoApp");
     }
 }

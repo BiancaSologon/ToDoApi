@@ -15,5 +15,6 @@ public class ToDoItem
 
     public ToDoDetails? ToDoDetails { get; set; }
 
-    public ICollection<Comment> Comments { get; set; } = new List<Comment>();
+    public ICollection<Comment> Comments { get; set; } = [];
+    public ICollection<Tag> Tags { get; set; } = [];
 }
