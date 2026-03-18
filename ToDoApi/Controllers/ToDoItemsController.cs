@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using ToDoApi.Models;
 
 namespace ToDoApi.Controllers;
@@ -9,10 +9,12 @@ namespace ToDoApi.Controllers;
 public class ToDoItemsController : ControllerBase
 {
     private readonly ToDoContext _context;
+    private readonly IMediator _mediator;
 
-    public ToDoItemsController(ToDoContext context)
+    public ToDoItemsController(ToDoContext context, IMediator mediator)
     {
         _context = context;
+        _mediator = mediator;
     }
 
     //GET comments for 1 todoitem: /api/ToDoItems/{id}/comments/{commentId}
@@ -21,51 +23,58 @@ public class ToDoItemsController : ControllerBase
 
     // GET: api/ToDoItems
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<ToDoItemsDTO>>> GetToDoItems()
+    public async Task<ActionResult<IEnumerable<ToDoItemDTO>>> GetToDoItems(
+        CancellationToken cancellationToken
+    )
     {
-        return await _context.ToDoItems.Select(x => ToDoItemsDTO(x)).ToListAsync();
+        var result = await _mediator.Send(new ToDoItemsQuery(), cancellationToken);
+
+        return Ok(result);
     }
 
     // GET: api/ToDoItems/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<ToDoItemsDTO>> GetToDoItem(long id)
+    public async Task<ActionResult<ToDoItemDTO>> GetToDoItem(
+        long id,
+        CancellationToken cancellationToken
+    )
     {
-        var toDoItem = await _context.ToDoItems.FindAsync(id);
+        var result = await _mediator.Send(new ToDoItemQuery { Id = id }, cancellationToken);
 
-        if (toDoItem == null)
+        if (result == null)
         {
             return NotFound();
         }
 
-        return ToDoItemsDTO(toDoItem);
+        return Ok(result);
     }
 
     // PUT: api/ToDoItems/5
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutToDoItem(long id, ToDoItem toDoItemDTO)
+    public async Task<IActionResult> PutToDoItem(
+        long id,
+        ToDoItemDTO toDoItemDTO,
+        CancellationToken cancellationToken
+    )
     {
         if (id != toDoItemDTO.Id)
         {
             return BadRequest();
         }
 
-        var toDoItem = await _context.ToDoItems.FindAsync(id);
-        if (toDoItem == null)
+        var updateCommand = new ToDoItemUpdateCommand
+        {
+            Id = id,
+            Name = toDoItemDTO.Name,
+            IsComplete = toDoItemDTO.IsComplete,
+            Description = toDoItemDTO.Description,
+        };
+
+        var result = await _mediator.Send(updateCommand, cancellationToken);
+
+        if (result.IsFailed)
         {
             return NotFound();
-        }
-
-        toDoItem.Name = toDoItemDTO.Name;
-        toDoItem.IsComplete = toDoItemDTO.IsComplete;
-        toDoItem.Description = toDoItemDTO.Description;
-
-        try
-        {
-            await _context.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException) when (!ToDoItemExists(id))
-        {
-           return NotFound();
         }
 
         return NoContent();
@@ -73,26 +82,19 @@ public class ToDoItemsController : ControllerBase
 
     // POST: api/ToDoItems
     [HttpPost]
-    public async Task<ActionResult<ToDoItem>> PostToDoItem(ToDoItemsDTO toDoItemDTO)
+    public async Task<ActionResult<ToDoItem>> PostToDoItem(ToDoItemDTO toDoItemDTO)
     {
-        var toDoItem = new ToDoItem
+        var createCommand = new ToDoItemCreateCommand
         {
-            IsComplete = toDoItemDTO.IsComplete,
             Name = toDoItemDTO.Name,
+            IsComplete = toDoItemDTO.IsComplete,
             Description = toDoItemDTO.Description,
             Secret = toDoItemDTO.Secret,
-            CreatedAt = DateTime.UtcNow,
-            Comments = toDoItemDTO.Comments!.Select(commentDTO => new Comment
-            {
-                Content = commentDTO.Content,
-                CreatedAt = DateTime.UtcNow
-            }).ToList(),
+            Comments = toDoItemDTO.Comments,
         };
+        var createdToDoItemId = await _mediator.Send(createCommand);
 
-        _context.ToDoItems.Add(toDoItem);
-        await _context.SaveChangesAsync();
-
-        return CreatedAtAction(nameof(GetToDoItem), new { id = toDoItem.Id }, ToDoItemsDTO(toDoItem));
+        return CreatedAtAction(nameof(GetToDoItem), new { id = createdToDoItemId });
     }
 
     // DELETE: api/ToDoItems/5
@@ -110,23 +112,4 @@ public class ToDoItemsController : ControllerBase
 
         return NoContent();
     }
-
-    private bool ToDoItemExists(long id)
-    {
-        return _context.ToDoItems.Any(e => e.Id == id);
-    }
-
-    private static ToDoItemsDTO ToDoItemsDTO(ToDoItem toDoItem) =>
-        new ToDoItemsDTO
-        {
-            Id = toDoItem.Id,
-            Name = toDoItem.Name,
-            Description = toDoItem.Description,
-            IsComplete = toDoItem.IsComplete,
-            Secret = toDoItem.Secret,
-            Comments = toDoItem.Comments?.Select(c => new CommentDTO
-            {
-                Content = c.Content
-            }).ToList()
-        };
 }
