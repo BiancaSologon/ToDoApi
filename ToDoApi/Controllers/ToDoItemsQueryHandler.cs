@@ -40,7 +40,7 @@ public class ToDoItemsQueryHandler : IRequestHandler<ToDoItemsQuery, PageList<To
 
         var list = await _context
             .ToDoItems.OrderBy(x => x.Id)
-            .Skip(request.PageNumber * request.Limit + 1)
+            .Skip(request.PageNumber * request.Limit)
             .Take(request.Limit)
             .Select(x => x.ToDTO())
             .ToListAsync(cancellationToken);

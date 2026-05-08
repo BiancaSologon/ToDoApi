@@ -1,6 +1,5 @@
 ﻿using FluentResults;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using ToDoApi.Models;
 
 namespace ToDoApi.Controllers;

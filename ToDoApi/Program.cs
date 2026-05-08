@@ -17,6 +17,7 @@ builder.Services.AddSwaggerGen();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 //builder.Services.AddDbContext<ToDoContext>(option => option.UseSqlServer("ToDoList"));
 
 var app = builder.Build();

@@ -12,8 +12,8 @@ using ToDoApi.Models;
 namespace ToDoApi.Migrations
 {
     [DbContext(typeof(ToDoContext))]
-    [Migration("20260128134950_AddCommentClassAndConnection")]
-    partial class AddCommentClassAndConnection
+    [Migration("20260428135937_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,11 +27,11 @@ namespace ToDoApi.Migrations
 
             modelBuilder.Entity("ToDoApi.Models.Comment", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -41,8 +41,8 @@ namespace ToDoApi.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("ToDoItemId")
-                        .HasColumnType("int");
+                    b.Property<long>("ToDoItemId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
@@ -51,13 +51,31 @@ namespace ToDoApi.Migrations
                     b.ToTable("Comment", "ToDoApp");
                 });
 
+            modelBuilder.Entity("ToDoApi.Models.Tag", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Tag", "ToDoApp");
+                });
+
             modelBuilder.Entity("ToDoApi.Models.ToDoDetails", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<int>("EstimatedMinutes")
                         .HasColumnType("int");
@@ -70,8 +88,8 @@ namespace ToDoApi.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
-                    b.Property<int>("ToDoItemId")
-                        .HasColumnType("int");
+                    b.Property<long>("ToDoItemId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
@@ -83,11 +101,11 @@ namespace ToDoApi.Migrations
 
             modelBuilder.Entity("ToDoApi.Models.ToDoItem", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -119,6 +137,21 @@ namespace ToDoApi.Migrations
                     b.ToTable("ToDoItem", "ToDoApp");
                 });
 
+            modelBuilder.Entity("ToDoItemTag", b =>
+                {
+                    b.Property<long>("TagId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("ToDoItemId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("TagId", "ToDoItemId");
+
+                    b.HasIndex("ToDoItemId");
+
+                    b.ToTable("ToDoItemTag", "ToDoApp");
+                });
+
             modelBuilder.Entity("ToDoApi.Models.Comment", b =>
                 {
                     b.HasOne("ToDoApi.Models.ToDoItem", "ToDoItem")
@@ -139,6 +172,21 @@ namespace ToDoApi.Migrations
                         .IsRequired();
 
                     b.Navigation("ToDoItem");
+                });
+
+            modelBuilder.Entity("ToDoItemTag", b =>
+                {
+                    b.HasOne("ToDoApi.Models.Tag", null)
+                        .WithMany()
+                        .HasForeignKey("TagId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ToDoApi.Models.ToDoItem", null)
+                        .WithMany()
+                        .HasForeignKey("ToDoItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("ToDoApi.Models.ToDoItem", b =>
