@@ -1,7 +1,9 @@
 ﻿using MediatR;
-using ToDoApi.Models;
+using ToDoApi.Features.Common;
+using ToDoApi.Features.ToDoItems.DTOs;
+using ToDoApi.Features.ToDoItems.Models;
 
-namespace ToDoApi.Controllers;
+namespace ToDoApi.Features.ToDoItems.Commands;
 
 public class ToDoItemCreateCommand : IRequest<long>
 {

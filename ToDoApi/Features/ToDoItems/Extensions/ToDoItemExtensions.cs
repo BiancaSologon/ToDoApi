@@ -1,6 +1,7 @@
-﻿using ToDoApi.Models;
+﻿using ToDoApi.Features.ToDoItems.DTOs;
+using ToDoApi.Features.ToDoItems.Models;
 
-namespace ToDoApi.Extensions;
+namespace ToDoApi.Features.ToDoItems.Extensions;
 
 public static class ToDoItemExtensions
 {

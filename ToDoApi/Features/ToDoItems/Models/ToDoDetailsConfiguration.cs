@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace ToDoApi.Models;
+namespace ToDoApi.Features.ToDoItems.Models;
 
 public class ToDoDetailsConfiguration : IEntityTypeConfiguration<ToDoDetails>
 {

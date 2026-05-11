@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ToDoApi.Features.ToDoItems.Models;
 
-namespace ToDoApi.Models;
+namespace ToDoApi.Features.Common;
 
 public class ToDoContext : DbContext
 {

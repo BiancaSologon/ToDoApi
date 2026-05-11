@@ -1,4 +1,4 @@
-﻿namespace ToDoApi.Models;
+﻿namespace ToDoApi.Features.ToDoItems.DTOs;
 
 public class ToDoItemDTO
 {

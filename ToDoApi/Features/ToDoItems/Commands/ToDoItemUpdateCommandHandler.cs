@@ -1,8 +1,8 @@
 ﻿using FluentResults;
 using MediatR;
-using ToDoApi.Models;
+using ToDoApi.Features.Common;
 
-namespace ToDoApi.Controllers;
+namespace ToDoApi.Features.ToDoItems.Commands;
 
 public class ToDoItemUpdateCommand : IRequest<Result>
 {

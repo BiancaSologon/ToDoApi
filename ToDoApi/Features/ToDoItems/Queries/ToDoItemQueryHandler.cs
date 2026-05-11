@@ -1,8 +1,10 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
-using ToDoApi.Models;
+using ToDoApi.Features.Common;
+using ToDoApi.Features.ToDoItems.DTOs;
+using ToDoApi.Features.ToDoItems.Models;
 
-namespace ToDoApi.Controllers;
+namespace ToDoApi.Features.ToDoItems.Queries;
 
 public class ToDoItemQueryHandler : IRequestHandler<ToDoItemQuery, ToDoItemDTO>
 {

@@ -1,8 +1,10 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using ToDoApi.Models;
+using ToDoApi.Features.ToDoItems.Commands;
+using ToDoApi.Features.ToDoItems.DTOs;
+using ToDoApi.Features.ToDoItems.Queries;
 
-namespace ToDoApi.Controllers;
+namespace ToDoApi.Features.ToDoItems.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -22,13 +24,16 @@ public class ToDoItemsController : ControllerBase
     // GET: api/ToDoItems
     [HttpGet]
     public async Task<ActionResult<IEnumerable<ToDoItemDTO>>> GetToDoItems(
-        [FromQuery] int pageNumber ,
+        [FromQuery] int pageNumber,
         [FromQuery] int limit,
         CancellationToken cancellationToken
     )
     {
         limit = limit <= 0 ? 1 : limit;
-        var result = await _mediator.Send(new ToDoItemsQuery() { Limit = limit, PageNumber = pageNumber }, cancellationToken);
+        var result = await _mediator.Send(
+            new ToDoItemsQuery() { Limit = limit, PageNumber = pageNumber },
+            cancellationToken
+        );
 
         return Ok(result);
     }
@@ -84,7 +89,7 @@ public class ToDoItemsController : ControllerBase
 
     // POST: api/ToDoItems
     [HttpPost]
-    public async Task<ActionResult<ToDoItem>> PostToDoItem(ToDoItemDTO toDoItemDTO)
+    public async Task<ActionResult<ToDoItemDTO>> PostToDoItem(ToDoItemDTO toDoItemDTO)
     {
         var createCommand = new ToDoItemCreateCommand
         {
@@ -103,10 +108,7 @@ public class ToDoItemsController : ControllerBase
     [HttpDelete("{id:long}")]
     public async Task<IActionResult> DeleteToDoItem(long id, CancellationToken cancellationToken)
     {
-        var toDoItemRemoveCommand = new ToDoItemDeleteCommand
-        {
-            Id = id,
-        };
+        var toDoItemRemoveCommand = new ToDoItemDeleteCommand { Id = id };
         var response = await _mediator.Send(toDoItemRemoveCommand, cancellationToken);
 
         if (response.IsFailed)

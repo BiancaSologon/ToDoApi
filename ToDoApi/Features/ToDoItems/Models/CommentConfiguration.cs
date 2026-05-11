@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace ToDoApi.Models;
+namespace ToDoApi.Features.ToDoItems.Models;
 
 public class CommentConfiguration : IEntityTypeConfiguration<Comment>
 {
@@ -11,10 +11,11 @@ public class CommentConfiguration : IEntityTypeConfiguration<Comment>
         builder.Property(c => c.Content).IsRequired().HasMaxLength(1000);
         builder.Property(c => c.CreatedAt).IsRequired();
 
-        builder.HasOne(c => c.ToDoItem)
-               .WithMany(tdi => tdi.Comments)
-               .HasForeignKey(c => c.ToDoItemId)
-               .IsRequired();
+        builder
+            .HasOne(c => c.ToDoItem)
+            .WithMany(tdi => tdi.Comments)
+            .HasForeignKey(c => c.ToDoItemId)
+            .IsRequired();
 
         builder.ToTable("Comment", "ToDoApp");
     }
