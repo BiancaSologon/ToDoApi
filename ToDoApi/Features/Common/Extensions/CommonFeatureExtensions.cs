@@ -12,6 +12,7 @@ public static class CommonFeatureExtensions
         var connectionString = configuration.GetConnectionString("DefaultConnection");
 
         services.AddDbContext<ToDoContext>(options => options.UseSqlServer(connectionString));
+
         return services;
     }
 }

@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.12.35728.132 d17.12
+# Visual Studio Version 18
+VisualStudioVersion = 18.5.11723.231 stable
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToDoApi", "ToDoApi\ToDoApi.csproj", "{5148B043-BEA1-4C26-81FC-29F5150D0892}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToDoApi.Integration.Tests", "ToDoApi.Integration.Tests\ToDoApi.Integration.Tests.csproj", "{A53749CE-4A82-4394-A7B9-D0AEBD07DC5C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{5148B043-BEA1-4C26-81FC-29F5150D0892}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5148B043-BEA1-4C26-81FC-29F5150D0892}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5148B043-BEA1-4C26-81FC-29F5150D0892}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A53749CE-4A82-4394-A7B9-D0AEBD07DC5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A53749CE-4A82-4394-A7B9-D0AEBD07DC5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A53749CE-4A82-4394-A7B9-D0AEBD07DC5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A53749CE-4A82-4394-A7B9-D0AEBD07DC5C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

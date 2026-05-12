@@ -9,8 +9,3 @@ public class ToDoItemDTO
     public string? Secret { get; set; }
     public List<CommentDTO> Comments { get; set; } = [];
 }
-
-public class CommentDTO
-{
-    public string? Content { get; set; }
-}
